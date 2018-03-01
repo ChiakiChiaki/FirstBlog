@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+            {% block body %}
+                {% if error_msg %}
+                <p>{{ error_msg }}</p>
+                {% else %}
+            {% for post in post_list %}
+                <article class="post post-{{ post.pk }}">
+                    <header class="entry-header">
+                        <h1 class="entry-title">
+
+{#                            这里也可以自己在类下reverse的返回url的方法 和 {% url %}的方法都可以#}
+                            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+
+                        </h1>
+                        <div class="entry-meta">
+                            <span class="post-category"><a href="#">{{ post.category.name }}</a></span>
+                            <span class="post-date"><a href="#"><time class="entry-date"
+                                                                      datetime="{{ post.ctime }}">{{ post.ctime }}</time></a></span>
+                            <span class="post-author"><a href="#">{{ post.auther }}</a></span>
+                            <span class="comments-link"><a href="#">{{ post.comment_set.count }} 评论</a></span>
+                            <span class="views-count"><a href="#">{{ post.views }} 阅读</a></span>
+                        </div>
+                    </header>
+                    <div class="entry-content clearfix">
+{#                也可以使用    {{ post.body|truncatechars:22 }#}
+                        <p>{{ post.excerpt }}</p>
+                        <div class="read-more cl-effect-14">
+
+                            <a href="{% url 'blog:detail' post.pk %}" class="more-link">继续阅读 <span class="meta-nav">→</span></a>
+                        </div>
+                    </div>
+                </article>
+                    {% empty %}
+                    <div class="no-post">暂时还没有发布的文章</div>
+                     {% endfor %}
+                {% endif %}
+
+
+
+{#                ListView 传递了以下和分页有关的模板变量供我们在模板中使用：#}
+{##}
+{#paginator ，Paginator 的实例 #}
+{#page_obj ，当前请求页面分页对象 #}
+{#is_paginated，是否已分页。只有当分页后页面超过两页时才算已分页。#}
+{#object_list，请求页面的对象列表，和 post_list 等价。所以在模板中循环文章列表时可以选 post_list ，也可以选 object_list。#}
+
+
+{#             {% if is_paginated %}#}
+{#                <div class="pagination-simple">#}
+{#                {% if page_obj.has_previous %}#}
+{#                    <a href="?page={{ page_obj.previous_page_number }}">上一页</a>#}
+{#                    {% endif %}#}
+{##}
+{#                    <span class="current">第 {{ page_obj.number }} 页 / 共 {{ paginator.num_pages }} 页</span>#}
+{##}
+{#                {% if page_obj.has_next %}#}
+{#                    <a href="?page={{ page_obj.next_page_number }}">下一页</a>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#                {% endif %}#}
+
+
+            {% if is_paginated %}
+            <div class="pagination">
+
+            {% if first %}
+                <a href="?page=1">1</a>
+                {% endif %}
+
+            {% if left_has_more %}
+                <span>...</span>
+                {% endif %}
+
+                {% if left %}
+                {% for i in left %}
+                    <a href="?page={{ i }}">{{ i }}</a>
+                  {% endfor %}
+                {% endif %}
+
+                <span style='color:red'>{{ page_obj.number }}</span>
+
+                {% if right %}
+                    {% for i in right %}
+                    <a href="?page={{ i }}">{{ i }}</a>
+                  {% endfor %}
+
+                    {% endif %}
+
+            {% if right_has_more %}
+                <span>...</span>
+                {% endif %}
+
+               {% if last %}
+                <a href="?page={{ paginator.num_pages }}">{{paginator.num_pages }}</a>
+                {% endif %}
+
+                </div>
+                 {% endif %}
+
+            {% endblock %}
+
+
+

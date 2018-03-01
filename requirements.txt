@@ -1,0 +1,5 @@
+Django==2.0.1
+django-haystack==2.6.1
+jieba==0.39
+pytz==2017.3
+Whoosh==2.7.4
